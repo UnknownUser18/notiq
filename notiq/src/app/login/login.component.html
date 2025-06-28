@@ -1,12 +1,37 @@
-<form [formGroup]="loginForm" (submit)="login()">
-  <h2>Login</h2>
-  <label>
-    Username:
-    <input type="text" placeholder="Enter your username" formControlName="username">
-  </label>
-  <label>
-    Password:
-    <input type="password" placeholder="Enter your password" formControlName="password">
-  </label>
-  <button type="submit">Login</button>
-</form>
+<div>
+  <form [formGroup]="loginForm" (submit)="login()">
+    <h1>Login</h1>
+    <p>Log in to access the application.</p>
+    <label>
+      <span>Username</span>
+      <input type="text" placeholder="Enter your username" formControlName="username" required>
+      @if (loginForm.get('username')!.invalid && loginForm.get('username')!.touched) {
+        <span class="error">Username is required.</span>
+      }
+    </label>
+    <label>
+      <span>Password</span>
+      <input type="password" placeholder="Enter your password" formControlName="password" required>
+      @if (loginForm.get('password')!.invalid && loginForm.get('password')!.touched) {
+        <span class="error">Password is required.</span>
+      }
+    </label>
+    <label>
+      <input type="checkbox" formControlName="rememberMe">
+      <span>Remember Me</span>
+    </label>
+    @if (isLoggingIn) {
+      <button type="button" disabled>
+        <span class="spinner"></span>
+        Logging in...
+      </button>
+    } @else {
+      <button type="submit">Login</button>
+    }
+  </form>
+  <section>
+    <h2>Welcome back!</h2>
+    <p>Enter your credentials to log in.</p>
+  </section>
+</div>
+

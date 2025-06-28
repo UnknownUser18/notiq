@@ -1,0 +1,5 @@
+@use 'variables' as v;
+
+@function transition($property, $duration: v.$duration-sm, $timing: v.$cubic-in-out) {
+  @return $property $duration $timing;
+}

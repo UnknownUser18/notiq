@@ -11,9 +11,12 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
   styleUrl : './login.component.scss'
 })
 export class LoginComponent {
+  protected isLoggingIn = false;
+
   protected loginForm = new FormGroup({
-    username : new FormControl('', [Validators.required]),
-    password : new FormControl('', [Validators.required])
+    username : new FormControl(null, [Validators.required]),
+    password : new FormControl(null, [Validators.required]),
+    rememberMe : new FormControl(false)
   });
 
 
@@ -21,12 +24,16 @@ export class LoginComponent {
   }
 
   protected login() : void {
+    this.loginForm.markAllAsTouched();
+    if (this.loginForm.invalid) return;
+    this.isLoggingIn = true;
     const loginForm = this.loginForm.value;
+    console.log('Dane logowania:', loginForm);
     this.authService.login(loginForm.username!, loginForm.password!).subscribe({
-      next: (response) => {
+      next : (response) => {
         console.log('Odpowiedź backendu:', response);
       },
-      error: (err) => {
+      error : (err) => {
         console.error('Błąd logowania:', err);
       }
     });
