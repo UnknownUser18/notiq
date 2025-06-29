@@ -42,15 +42,15 @@
         <p>{{ 'login.sidebar.subtitle' | translate }}</p>
       }
       @case (200) {
-        <h2>{{ 'login.status.200.title' | translate }}</h2>
+        <h2><fa-icon [icon]="faCheck"></fa-icon>{{ 'login.status.200.title' | translate }}</h2>
         <p>{{ 'login.status.200.message' | translate }}</p>
       }
       @case (401) {
-        <h2>{{ 'login.status.401.title' | translate }}</h2>
+        <h2><fa-icon [icon]="faWarning"></fa-icon>{{ 'login.status.401.title' | translate }}</h2>
         <p>{{ 'login.status.401.message' | translate }}</p>
       }
       @case (500) {
-        <h2>{{ 'login.status.500.title' | translate }}</h2>
+        <h2><fa-icon [icon]="faWarning"></fa-icon>{{ 'login.status.500.title' | translate }}</h2>
         <p>{{ 'login.status.500.message' | translate }}</p>
       }
     }

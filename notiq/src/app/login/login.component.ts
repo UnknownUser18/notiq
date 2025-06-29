@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TranslatePipe } from "@ngx-translate/core";
 import { Subject, takeUntil } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faEye, faEyeSlash, faWarning } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector : 'app-login',
   imports : [
@@ -66,4 +66,6 @@ export class LoginComponent implements OnDestroy {
 
   protected readonly faEyeSlash = faEyeSlash;
   protected readonly faEye = faEye;
+  protected readonly faWarning = faWarning;
+  protected readonly faCheck = faCheck;
 }

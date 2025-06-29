@@ -41,12 +41,13 @@
 
 section {
   @include i.flex(column, center, end);
-  width: 50%;
+  width: clamp(150px, 50%, 300px);
   padding: i.$padding-sm;
   gap: i.$margin-2xs;
   border: i.$base-border transparent;
   border-radius: i.$border-radius-lg;
   background-color: var(--bg-light);
+  text-align: end;
   transition: i.transition(background-color, i.$duration-md);
 
   &.success {
@@ -68,6 +69,11 @@ form {
 
 h1 {
   font-size: i.$font-size-2xl;
+}
+
+h2 {
+  @include i.flex(row, space-between, center);
+  gap: i.$margin-2xs;
 }
 
 p {
@@ -104,8 +110,9 @@ label {
 
   div {
     @include i.flex(row, start, center);
-    padding: i.$padding-3xs;
-    border: i.$base-border var(--border-muted);
+    width: 100%;
+    padding: 0 i.$padding-2xs;
+    border: i.$base-border transparent;
     border-radius: i.$border-radius-lg;
     background-color: var(--bg-light);
     transition: i.transition(border-color);
