@@ -1,5 +1,4 @@
 @use 'index' as i;
-@use '../node_modules/font-awesome/scss/font-awesome' as fa;
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap');
 
 * {
@@ -8,16 +7,18 @@
   box-sizing: border-box;
 }
 
+::selection {
+  background-color: var(--highlight);
+  color: var(--text);
+}
+
+
 html, body, app-root {
   @include i.flex(column, center, center);
   min-width: 100%;
   min-height: 100%;
 }
 
-.fa-solid {
-  font-family: 'Font Awesome 6 Free', sans-serif;
-  font-weight: 900;
-}
 
 body, app-root, app-login {
   flex: 1;

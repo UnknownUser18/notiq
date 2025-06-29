@@ -11,7 +11,12 @@
     </label>
     <label>
       <span>{{ 'login.password.label' | translate }}</span>
-      <input type="password" [placeholder]="'login.password.placeholder' | translate" formControlName="password" required>
+      <div>
+        <input [type]="showPassword ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" required>
+        <button type="button" (click)="showPassword = !showPassword" class="show-password">
+          <fa-icon [icon]="showPassword ? faEyeSlash : faEye" [title]="showPassword ? ('login.password.hide' | translate) : ('login.password.show' | translate)"></fa-icon>
+        </button>
+      </div>
       @if (loginForm.get('password')!.invalid && loginForm.get('password')!.touched) {
         <span class="error">{{ 'login.password.warning' | translate }}</span>
       }
@@ -20,6 +25,7 @@
       <input type="checkbox" formControlName="rememberMe">
       <span>{{ 'login.rememberMe' | translate }}</span>
     </label>
+
     @if (isLoggingIn) {
       <button type="button" disabled>
         <span class="spinner"></span>
@@ -29,9 +35,25 @@
       <button type="submit">{{ 'login.button.label' | translate }}</button>
     }
   </form>
-  <section>
-    <h2>{{ 'login.sidebar.title' | translate }}</h2>
-    <p>{{ 'login.sidebar.subtitle' | translate }}</p>
+  <section [class]="{ 'success': statusNumber === 200, 'error': statusNumber !== 200 && statusNumber !== undefined }">
+    @switch (statusNumber) {
+      @case (undefined) {
+        <h2>{{ 'login.sidebar.title' | translate }}</h2>
+        <p>{{ 'login.sidebar.subtitle' | translate }}</p>
+      }
+      @case (200) {
+        <h2>{{ 'login.status.200.title' | translate }}</h2>
+        <p>{{ 'login.status.200.message' | translate }}</p>
+      }
+      @case (401) {
+        <h2>{{ 'login.status.401.title' | translate }}</h2>
+        <p>{{ 'login.status.401.message' | translate }}</p>
+      }
+      @case (500) {
+        <h2>{{ 'login.status.500.title' | translate }}</h2>
+        <p>{{ 'login.status.500.message' | translate }}</p>
+      }
+    }
   </section>
 </div>
 

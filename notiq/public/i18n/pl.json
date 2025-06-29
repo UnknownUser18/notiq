@@ -14,11 +14,27 @@
     "password": {
       "label": "Hasło",
       "placeholder": "Wprowadź hasło...",
-      "warning": "Hasło jest wymagane."
+      "warning": "Hasło jest wymagane.",
+      "hide": "Ukryj hasło",
+      "show": "Pokaż hasło"
     },
     "button": {
       "label": "Zaloguj się",
       "loggingIn": "Logowanie..."
+    },
+    "status": {
+      "200": {
+        "title": "Zalogowano pomyślnie",
+        "message": "Przekierowywanie do aplikacji..."
+      },
+      "401": {
+        "title": "Brak autoryzacji",
+        "message": "Dane logowania są nieprawidłowe."
+      },
+      "500": {
+        "title": "Błąd serwera",
+        "message": "Wystąpił problem z serwerem. Spróbuj ponownie później."
+      }
     },
     "rememberMe": "Zapamiętaj mnie"
   }

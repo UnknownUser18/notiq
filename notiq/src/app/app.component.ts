@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { LoginComponent } from './login/login.component';
-import { TranslateService, TranslatePipe, TranslateDirective } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector : 'app-root',
   imports : [
     LoginComponent,
-    TranslatePipe,
-    TranslateDirective
   ],
   templateUrl : './app.component.html',
   styleUrl : './app.component.scss'
