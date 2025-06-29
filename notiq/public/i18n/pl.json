@@ -1,0 +1,41 @@
+{
+  "login": {
+    "title": "Logowanie",
+    "subtitle": "Zaloguj się, aby uzyskać dostęp do aplikacji.",
+    "sidebar": {
+      "title": "Witamy z powrotem!",
+      "subtitle": "Wprowadź swoje dane, aby się zalogować."
+    },
+    "username": {
+      "label": "Nazwa użytkownika",
+      "placeholder": "Wprowadź nazwę użytkownika...",
+      "warning": "Nazwa użytkownika jest wymagana."
+    },
+    "password": {
+      "label": "Hasło",
+      "placeholder": "Wprowadź hasło...",
+      "warning": "Hasło jest wymagane.",
+      "hide": "Ukryj hasło",
+      "show": "Pokaż hasło"
+    },
+    "button": {
+      "label": "Zaloguj się",
+      "loggingIn": "Logowanie..."
+    },
+    "status": {
+      "200": {
+        "title": "Zalogowano pomyślnie",
+        "message": "Przekierowywanie do aplikacji..."
+      },
+      "401": {
+        "title": "Brak autoryzacji",
+        "message": "Dane logowania są nieprawidłowe."
+      },
+      "500": {
+        "title": "Błąd serwera",
+        "message": "Wystąpił problem z serwerem. Spróbuj ponownie później."
+      }
+    },
+    "rememberMe": "Zapamiętaj mnie"
+  }
+}

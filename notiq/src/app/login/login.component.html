@@ -1,12 +1,59 @@
-<form [formGroup]="loginForm" (submit)="login()">
-  <h2>Login</h2>
-  <label>
-    Username:
-    <input type="text" placeholder="Enter your username" formControlName="username">
-  </label>
-  <label>
-    Password:
-    <input type="password" placeholder="Enter your password" formControlName="password">
-  </label>
-  <button type="submit">Login</button>
-</form>
+<div>
+  <form [formGroup]="loginForm" (submit)="login()">
+    <h1>{{ 'login.title' | translate }}</h1>
+    <p>{{ 'login.subtitle' | translate }}</p>
+    <label>
+      <span>{{ 'login.username.label' | translate }}</span>
+      <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" required>
+      @if (loginForm.get('username')!.invalid && loginForm.get('username')!.touched) {
+        <span class="error">{{ 'login.username.warning' | translate }}</span>
+      }
+    </label>
+    <label>
+      <span>{{ 'login.password.label' | translate }}</span>
+      <div>
+        <input [type]="showPassword ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" required>
+        <button type="button" (click)="showPassword = !showPassword" class="show-password">
+          <fa-icon [icon]="showPassword ? faEyeSlash : faEye" [title]="showPassword ? ('login.password.hide' | translate) : ('login.password.show' | translate)"></fa-icon>
+        </button>
+      </div>
+      @if (loginForm.get('password')!.invalid && loginForm.get('password')!.touched) {
+        <span class="error">{{ 'login.password.warning' | translate }}</span>
+      }
+    </label>
+    <label>
+      <input type="checkbox" formControlName="rememberMe">
+      <span>{{ 'login.rememberMe' | translate }}</span>
+    </label>
+
+    @if (isLoggingIn) {
+      <button type="button" disabled>
+        <span class="spinner"></span>
+        {{ 'login.button.loggingIn' | translate }}
+      </button>
+    } @else {
+      <button type="submit">{{ 'login.button.label' | translate }}</button>
+    }
+  </form>
+  <section [class]="{ 'success': statusNumber === 200, 'error': statusNumber !== 200 && statusNumber !== undefined }">
+    @switch (statusNumber) {
+      @case (undefined) {
+        <h2>{{ 'login.sidebar.title' | translate }}</h2>
+        <p>{{ 'login.sidebar.subtitle' | translate }}</p>
+      }
+      @case (200) {
+        <h2>{{ 'login.status.200.title' | translate }}</h2>
+        <p>{{ 'login.status.200.message' | translate }}</p>
+      }
+      @case (401) {
+        <h2>{{ 'login.status.401.title' | translate }}</h2>
+        <p>{{ 'login.status.401.message' | translate }}</p>
+      }
+      @case (500) {
+        <h2>{{ 'login.status.500.title' | translate }}</h2>
+        <p>{{ 'login.status.500.message' | translate }}</p>
+      }
+    }
+  </section>
+</div>
+

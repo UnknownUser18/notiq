@@ -9,8 +9,7 @@ export class AuthService {
   constructor(private http : HttpClient) {
   }
 
-  public login(username : string, password : string) {
-    console.log('Logging in with username:', username);
-    return this.http.post('/api/auth/login', { username, password }, { withCredentials : true });
+  public login(username : string, password : string, rememberMe : boolean = false) {
+    return this.http.post('/api/auth/login', { username, password, rememberMe }, { withCredentials : true, observe: 'response' });
   }
 }

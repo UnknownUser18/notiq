@@ -56,8 +56,7 @@ db.connect((err) => {
 });
 
 const loginHandler = (req : Request, res : Response) : void => {
-  console.log('Login request received:', req.body);
-  const { username, password } = req.body;
+  const { username, password, rememberMe } = req.body;
 
   if (!username || !password) {
     res.status(400).json({ message : 'Username and password are required' });
@@ -70,15 +69,12 @@ const loginHandler = (req : Request, res : Response) : void => {
       res.status(500).json({ message : 'Internal server error' });
       return;
     }
-
     const userExists = (results as any)[0]?.userExists === 1;
     if (!userExists) {
-      console.warn('Invalid login attempt for username:', username);
       res.status(401).json({ message : 'Invalid username or password' });
       return;
     }
-    console.log('User logged in:', username);
-    const token = jwt.sign({ username }, SECRET, { expiresIn : '1h' });
+    const token = jwt.sign({ username }, SECRET, rememberMe ? { expiresIn : '30d' } : undefined);
 
     res.cookie('token', token, { httpOnly : true });
     res.status(200).json({ message : 'Login successful' });
