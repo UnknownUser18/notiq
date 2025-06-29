@@ -19,8 +19,8 @@ div {
 
   &::before {
     position: absolute;
-    background: linear-gradient(45deg, var(--bg) 45%, var(--bg-light));
-    transition: opacity 0.5s;
+    background: linear-gradient(45deg, var(--bg) 20%, var(--bg-light));
+    transition: i.transition(opacity, i.$duration-lg);
     opacity: 0;
     content: '';
     inset: 0;
@@ -66,10 +66,11 @@ p {
 
 label {
   @include i.flex(column);
+  width: 100%;
   gap: i.$margin-2xs;
 
   &:last-of-type {
-    @include i.flex(row, space-between, center);
+    @include i.flex(row, start, center);
     cursor: pointer;
   }
 
@@ -90,6 +91,7 @@ label {
   }
 
   input {
+    width: 100%;
     padding: i.$padding-2xs;
     font-size: i.$font-size-sm;
     border: i.$base-border var(--bg-light);

@@ -1,0 +1,25 @@
+{
+  "login": {
+    "title": "Login",
+    "subtitle": "Log in to access the application.",
+    "sidebar": {
+      "title": "Welcome back!",
+      "subtitle": "Enter your credentials to log in."
+    },
+    "username": {
+      "label": "Username",
+      "placeholder": "Enter your username...",
+      "warning": "Username is required."
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password...",
+      "warning": "Password is required."
+    },
+    "button": {
+      "label": "Log In",
+      "loggingIn": "Logging in..."
+    },
+    "rememberMe": "Remember me"
+  }
+}

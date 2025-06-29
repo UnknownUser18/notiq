@@ -1,0 +1,25 @@
+{
+  "login": {
+    "title": "Logowanie",
+    "subtitle": "Zaloguj się, aby uzyskać dostęp do aplikacji.",
+    "sidebar": {
+      "title": "Witamy z powrotem!",
+      "subtitle": "Wprowadź swoje dane, aby się zalogować."
+    },
+    "username": {
+      "label": "Nazwa użytkownika",
+      "placeholder": "Wprowadź nazwę użytkownika...",
+      "warning": "Nazwa użytkownika jest wymagana."
+    },
+    "password": {
+      "label": "Hasło",
+      "placeholder": "Wprowadź hasło...",
+      "warning": "Hasło jest wymagane."
+    },
+    "button": {
+      "label": "Zaloguj się",
+      "loggingIn": "Logowanie..."
+    },
+    "rememberMe": "Zapamiętaj mnie"
+  }
+}

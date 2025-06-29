@@ -1,37 +1,37 @@
 <div>
   <form [formGroup]="loginForm" (submit)="login()">
-    <h1>Login</h1>
-    <p>Log in to access the application.</p>
+    <h1>{{ 'login.title' | translate }}</h1>
+    <p>{{ 'login.subtitle' | translate }}</p>
     <label>
-      <span>Username</span>
-      <input type="text" placeholder="Enter your username" formControlName="username" required>
+      <span>{{ 'login.username.label' | translate }}</span>
+      <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" required>
       @if (loginForm.get('username')!.invalid && loginForm.get('username')!.touched) {
-        <span class="error">Username is required.</span>
+        <span class="error">{{ 'login.username.warning' | translate }}</span>
       }
     </label>
     <label>
-      <span>Password</span>
-      <input type="password" placeholder="Enter your password" formControlName="password" required>
+      <span>{{ 'login.password.label' | translate }}</span>
+      <input type="password" [placeholder]="'login.password.placeholder' | translate" formControlName="password" required>
       @if (loginForm.get('password')!.invalid && loginForm.get('password')!.touched) {
-        <span class="error">Password is required.</span>
+        <span class="error">{{ 'login.password.warning' | translate }}</span>
       }
     </label>
     <label>
       <input type="checkbox" formControlName="rememberMe">
-      <span>Remember Me</span>
+      <span>{{ 'login.rememberMe' | translate }}</span>
     </label>
     @if (isLoggingIn) {
       <button type="button" disabled>
         <span class="spinner"></span>
-        Logging in...
+        {{ 'login.button.loggingIn' | translate }}
       </button>
     } @else {
-      <button type="submit">Login</button>
+      <button type="submit">{{ 'login.button.label' | translate }}</button>
     }
   </form>
   <section>
-    <h2>Welcome back!</h2>
-    <p>Enter your credentials to log in.</p>
+    <h2>{{ 'login.sidebar.title' | translate }}</h2>
+    <p>{{ 'login.sidebar.subtitle' | translate }}</p>
   </section>
 </div>
 
