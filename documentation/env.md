@@ -40,7 +40,7 @@ DATABASE_PASSWORD=""
 ```dotenv
 HOST="localhost"
 PORT=3000
-ACCEPTED_HOST="http://localhost:4200"
+ACCEPTED_HOST="localhost:4200"
 JWT_SECRET_KEY="your_jwt_secret"
 DATABASE_HOST="localhost"
 DATABASE_NAME="your_database_name"
