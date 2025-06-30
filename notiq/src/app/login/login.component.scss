@@ -5,10 +5,9 @@
   min-width: 100%;
 
   > div {
-    @include i.flex($justify: space-between);
+    @include i.flex($justify: space-between, $gap: i.$margin-xl);
     position: relative;
     overflow: hidden;
-    gap: i.$margin-xl;
     align-items: unset;
     border: i.$base-border var(--border-muted);
     border-radius: i.$border-radius-xl;
@@ -40,10 +39,9 @@
 
 
 section {
-  @include i.flex(column, center, end);
+  @include i.flex(column, center, end, i.$margin-2xs);
   width: clamp(150px, 50%, 300px);
   padding: i.$padding-sm;
-  gap: i.$margin-2xs;
   border: i.$base-border transparent;
   border-radius: i.$border-radius-lg;
   background-color: var(--bg-light);
@@ -60,10 +58,9 @@ section {
 }
 
 form {
-  @include i.flex(column);
+  @include i.flex(column, $gap: i.$margin-lg);
   margin: auto;
   padding: i.$padding-lg;
-  gap: i.$margin-lg;
 }
 
 
@@ -72,8 +69,7 @@ h1 {
 }
 
 h2 {
-  @include i.flex(row, space-between, center);
-  gap: i.$margin-2xs;
+  @include i.flex(row, space-between, center, i.$margin-2xs);
 }
 
 p {
@@ -83,9 +79,8 @@ p {
 }
 
 label {
-  @include i.flex(column);
+  @include i.flex(column, $gap: i.$margin-2xs);
   width: 100%;
-  gap: i.$margin-2xs;
 
   &:last-of-type {
     @include i.flex(row, start, center);
@@ -194,10 +189,9 @@ label {
 }
 
 button:not(.show-password) {
-  @include i.flex($justify: center, $align: center);
+  @include i.flex($justify: center, $align: center, $gap: i.$margin-2xs);
   width: 100%;
   padding: i.$padding-2xs i.$padding-md;
-  gap: i.$margin-2xs;
   cursor: pointer;
   font-size: i.$font-size-md;
   font-weight: 500;
