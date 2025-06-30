@@ -1,10 +1,10 @@
-<div>
+<div #main>
   <form [formGroup]="loginForm" (submit)="login()">
     <h1>{{ 'login.title' | translate }}</h1>
-    <p>{{ 'login.subtitle' | translate }}</p>
+    <p class="break-word">{{ 'login.subtitle' | translate }}</p>
     <label>
       <span>{{ 'login.username.label' | translate }}</span>
-      <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" required>
+      <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" name="username" required>
       @if (loginForm.get('username')!.invalid && loginForm.get('username')!.touched) {
         <span class="error">{{ 'login.username.warning' | translate }}</span>
       }
@@ -12,8 +12,8 @@
     <label>
       <span>{{ 'login.password.label' | translate }}</span>
       <div>
-        <input [type]="showPassword ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" required>
-        <button type="button" (click)="showPassword = !showPassword" class="show-password">
+        <input [type]="showPassword ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" name="password" required>
+        <button type="button" (click)="showPassword = !showPassword" class="show-password" [disabled]="loginForm.disabled">
           <fa-icon [icon]="showPassword ? faEyeSlash : faEye" [title]="showPassword ? ('login.password.hide' | translate) : ('login.password.show' | translate)"></fa-icon>
         </button>
       </div>
@@ -22,7 +22,7 @@
       }
     </label>
     <label>
-      <input type="checkbox" formControlName="rememberMe">
+      <input type="checkbox" formControlName="rememberMe" name="rememberMe">
       <span>{{ 'login.rememberMe' | translate }}</span>
     </label>
 
@@ -30,6 +30,10 @@
       <button type="button" disabled>
         <span class="spinner"></span>
         {{ 'login.button.loggingIn' | translate }}
+      </button>
+    } @else if (loginForm.disabled) {
+      <button type="button" class="break-word" disabled>
+        {{ 'login.button.disabled' | translate }}
       </button>
     } @else {
       <button type="submit">{{ 'login.button.label' | translate }}</button>

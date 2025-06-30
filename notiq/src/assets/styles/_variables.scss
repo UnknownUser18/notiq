@@ -94,3 +94,15 @@ $duration-sm: 200ms;
 $duration-md: 400ms;
 $duration-lg: 500ms;
 $duration-xl: 750ms;
+
+$font-line-heights: (
+  $font-size-3xs: 3,
+  $font-size-2xs: 2.5,
+  $font-size-xs: 2,
+  $font-size-sm: 1.75,
+  $font-size-md: 1.5,
+  $font-size-lg: 1.4,
+  $font-size-xl: 1.3,
+  $font-size-2xl: 1.2,
+  $font-size-3xl: 1.1
+);

@@ -82,3 +82,56 @@ const loginHandler = (req : Request, res : Response) : void => {
 };
 
 app.post('/api/auth/login', loginHandler);
+
+const bannedIPs: Map<string, Date> = new Map();
+
+const banDuration = 15 * 60 * 1000; // 15 minutes
+
+const rejectLoginHandler = (req : Request, res : Response) : void => {
+  const ip = req.ip;
+  console.log(ip)
+  if (!ip) {
+    res.status(400).json({ message : 'Error while handling login.' });
+    return;
+  }
+  const currentTime = new Date();
+  const banTime = bannedIPs.get(ip);
+  if (banTime && currentTime.getTime() - banTime.getTime() < banDuration) {
+    bannedIPs.set(ip, banTime);
+    console.log(`IP ${ ip } has been banned for ${ banDuration } seconds.`);
+    res.status(403).json({ message : 'Login rejected due to too many attempts. Please try again later.' });
+    return;
+  }
+  bannedIPs.set(ip, currentTime);
+  console.log(`IP ${ ip } has been banned.`);
+  res.status(200).json({ message : 'Login rejected' });
+}
+
+app.post('/api/auth/reject-login', rejectLoginHandler);
+
+setInterval(() => {
+  const now = new Date();
+  for (const [ip, banTime] of bannedIPs.entries()) {
+    if (now.getTime() - banTime.getTime() >= banDuration) {
+      bannedIPs.delete(ip);
+      console.log(`Ban for IP ${ip} has been cleared.`);
+    }
+  }
+}, 60 * 1000);
+
+const checkLoginStatusHandler = (req : Request, res : Response) : void => {
+  const ip = req.ip;
+  if (!ip) {
+    res.status(400).json({ message : 'Error while checking login status.' });
+    return;
+  }
+
+  if (bannedIPs.has(ip)) {
+    res.status(403).json({ message : 'Login rejected due to too many attempts. Please try again later.' });
+    return;
+  } else {
+    res.status(200).json({ message : 'User can log in.' });
+  }
+};
+
+app.post('/api/auth/check-login-status', checkLoginStatusHandler);

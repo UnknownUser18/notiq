@@ -20,7 +20,8 @@
     },
     "button": {
       "label": "Log In",
-      "loggingIn": "Logging in..."
+      "loggingIn": "Logging in...",
+      "disabled": "Too many login attempts. \nPlease try again later."
     },
     "status": {
       "200": {

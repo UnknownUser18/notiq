@@ -20,7 +20,8 @@
     },
     "button": {
       "label": "Zaloguj się",
-      "loggingIn": "Logowanie..."
+      "loggingIn": "Logowanie...",
+      "disabled": "Zbyt wiele prób logowania. \nSpróbuj ponownie później."
     },
     "status": {
       "200": {

@@ -1,7 +1,14 @@
+@use 'variables' as v;
+
 @mixin flex($direction: row, $justify: start, $align: start, $gap: 0) {
   display: flex;
   flex-direction: $direction;
   justify-content: $justify;
   align-items: $align;
   gap: $gap;
+}
+
+@mixin font-height($font-size) {
+  font-size: $font-size;
+  line-height: map-get(v.$font-line-heights, $font-size);
 }

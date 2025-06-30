@@ -119,6 +119,10 @@ label {
     input {
       border: none;
       background-color: transparent;
+
+      &:disabled + button {
+        color: var(--text-muted);
+      }
     }
 
     button {
@@ -141,6 +145,13 @@ label {
     border-radius: i.$border-radius-lg;
     transition: i.transition(border-color);
 
+    &:disabled {
+      @include i.font-height(i.$font-size-sm);
+      cursor: not-allowed;
+      background-color: var(--bg-light);
+      color: var(--text-muted);
+    }
+
     &:focus {
       border-color: var(--primary);
     }
@@ -157,6 +168,21 @@ label {
       transition: i.transition(background), i.transition(border-color);
       appearance: none;
 
+
+      &:disabled {
+        cursor: not-allowed;
+        background-color: var(--bg-light);
+        border-color: var(--border-muted);
+
+        &:checked {
+          background: var(--bg-light);
+          border-color: var(--border-muted);
+
+          &::after {
+            border-color: var(--primary);
+          }
+        }
+      }
 
       &:checked {
         background: var(--primary);
@@ -201,11 +227,19 @@ button:not(.show-password) {
   transition: i.transition(background-color, i.$duration-md), i.transition(outline-color);
   outline: none;
 
+  &:disabled {
+    @include i.font-height(i.$font-size-sm);
+    cursor: not-allowed;
+    background-color: var(--bg-light);
+    color: var(--text-muted);
+    border-color: var(--border-muted);
+  }
+
   &:focus {
     outline: 2px solid var(--highlight);
   }
 
-  &:hover, &:focus {
+  &:not(:disabled):hover, &:not(:disabled):focus {
     background-color: var(--secondary);
   }
 }
