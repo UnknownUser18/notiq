@@ -48,10 +48,8 @@ const db = mysql.createConnection({
   database : process.env.DATABASE_NAME,
 });
 db.connect((err) => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    return;
-  }
+  if (err)
+    throw new Error('Database connection failed: ' + err.message);
   console.log('Connected to the database!');
 });
 
@@ -145,3 +143,21 @@ const checkLoginStatusHandler = (req : Request, res : Response) : void => {
 };
 
 app.post('/api/auth/check-login-status', checkLoginStatusHandler);
+
+const checkSessionHandler = (req : Request, res : Response) : void => {
+  const token = req.cookies.token;
+  if (!token) {
+    res.status(401).json({ message : 'No session found' });
+    return;
+  }
+
+  jwt.verify(token, SECRET, (err : any, decoded : any) => {
+    if (err) {
+      res.status(403).json({ message : 'Invalid session' });
+      return;
+    }
+    res.status(200).json({ message : 'Session is valid', user : decoded });
+  });
+}
+
+app.post('/api/auth/check-session', checkSessionHandler);

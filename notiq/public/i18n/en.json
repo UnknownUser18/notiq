@@ -1,4 +1,21 @@
 {
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred. Please try again later.",
+    "back": "Back",
+    "next": "Next",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "title": {
+    "application": "Notiq",
+    "login": "Notiq - Login"
+  },
   "login": {
     "title": "Login",
     "subtitle": "Log in to access the application.",
@@ -30,7 +47,7 @@
       },
       "401": {
         "title": "Unauthorized",
-        "message": "The login credentials are invalid."
+        "message": "Login credentials are invalid."
       },
       "500": {
         "title": "Server Error",

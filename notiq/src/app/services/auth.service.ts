@@ -16,7 +16,12 @@ export class AuthService {
   public rejectLogin() {
     return this.http.post('/api/auth/reject-login', {}, { withCredentials : true, observe : 'response' });
   }
+
   public checkLoginStatus() {
     return this.http.post('/api/auth/check-login-status', {}, { withCredentials : true, observe : 'response' });
+  }
+
+  public checkSession() {
+    return this.http.post('/api/auth/check-session', {}, { withCredentials : true, observe : 'response' });
   }
 }

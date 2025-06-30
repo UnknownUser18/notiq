@@ -40,7 +40,7 @@
 
 section {
   @include i.flex(column, center, end, i.$margin-2xs);
-  width: clamp(150px, 50%, 300px);
+  width: clamp(150px, 50%, 375px);
   padding: i.$padding-sm;
   border: i.$base-border transparent;
   border-radius: i.$border-radius-lg;
@@ -227,9 +227,12 @@ button:not(.show-password) {
   transition: i.transition(background-color, i.$duration-md), i.transition(outline-color);
   outline: none;
 
-  &:disabled {
-    @include i.font-height(i.$font-size-sm);
+  .logging-in, &:disabled {
     cursor: not-allowed;
+  }
+
+  &:disabled:not(.logging-in) {
+    @include i.font-height(i.$font-size-sm);
     background-color: var(--bg-light);
     color: var(--text-muted);
     border-color: var(--border-muted);

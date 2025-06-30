@@ -1,4 +1,21 @@
 {
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Wystąpił błąd. Spróbuj ponownie później.",
+    "back": "Wróć",
+    "next": "Dalej",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "confirm": "Potwierdź",
+    "yes": "Tak",
+    "no": "Nie"
+  },
+  "title": {
+    "application": "Notiq",
+    "login": "Notiq - Logowanie"
+  },
   "login": {
     "title": "Logowanie",
     "subtitle": "Zaloguj się, aby uzyskać dostęp do aplikacji.",

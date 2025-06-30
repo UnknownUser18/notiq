@@ -1,12 +1,14 @@
 import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { finalize, Subject, takeUntil } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faCheck, faEye, faEyeSlash, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { animate } from 'animejs';
 import { isPlatformBrowser } from '@angular/common';
+import { take } from 'rxjs/operators';
+import { InfoService } from '../services/info.service';
 
 @Component({
   selector : 'app-login',
@@ -16,7 +18,7 @@ import { isPlatformBrowser } from '@angular/common';
     FontAwesomeModule
   ],
   templateUrl : './login.component.html',
-  styleUrl : './login.component.scss'
+  styleUrl : './login.component.scss',
 })
 export class LoginComponent implements OnDestroy, AfterViewInit {
   private destroy$ : Subject<void> = new Subject<void>();
@@ -41,7 +43,12 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChild('main') main! : ElementRef;
   @ViewChildren('error') errorElements! : QueryList<ElementRef>;
 
-  constructor(@Inject(PLATFORM_ID) private platformId : Object, private authService : AuthService) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId : Object,
+    private authService : AuthService,
+    private translate : TranslateService,
+    private info : InfoService) {
+    this.translate.get('title.login').pipe(take(1)).subscribe(title => this.info.setTitle(title));
     this.authService.checkLoginStatus().pipe(takeUntil(this.destroy$)).subscribe({
       next : (response) => {
         if (response.status === 200)
@@ -73,6 +80,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
       })).subscribe({
       next : (response) => {
         this.statusNumber = response.status;
+        this.numberOfAttempts = 0;
       },
       error : (error) => {
         this.statusNumber = error.status;
@@ -97,11 +105,11 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
         animate(element.nativeElement, {
           opacity : [0, 1],
           x : [
-            { to: -10, duration: 50 },
-            { to: 10, duration: 100 },
-            { to: -10, duration: 100 },
-            { to: 10, duration: 100 },
-            { to: 0, duration: 50 }
+            { to : -10, duration : 50 },
+            { to : 10, duration : 100 },
+            { to : -10, duration : 100 },
+            { to : 10, duration : 100 },
+            { to : 0, duration : 50 }
           ],
           duration : 500,
           easing : 'easeInOutQuad',
