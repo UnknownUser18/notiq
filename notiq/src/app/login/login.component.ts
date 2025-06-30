@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from "@ngx-translate/core";
@@ -39,6 +39,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   });
 
   @ViewChild('main') main! : ElementRef;
+  @ViewChildren('error') errorElements! : QueryList<ElementRef>;
 
   constructor(@Inject(PLATFORM_ID) private platformId : Object, private authService : AuthService) {
     this.authService.checkLoginStatus().pipe(takeUntil(this.destroy$)).subscribe({
@@ -86,8 +87,28 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
       opacity : [0, 1],
       duration : 750,
       delay : 50,
-      easing : 'easeInOutQuad'
+      easing : 'easeInOutQuad',
     });
+    let previousErrorElements : ElementRef[] = [];
+    this.errorElements.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const errorElements = this.errorElements.toArray();
+      errorElements.forEach((element) => {
+        if (previousErrorElements.includes(element)) return;
+        animate(element.nativeElement, {
+          opacity : [0, 1],
+          x : [
+            { to: -10, duration: 50 },
+            { to: 10, duration: 100 },
+            { to: -10, duration: 100 },
+            { to: 10, duration: 100 },
+            { to: 0, duration: 50 }
+          ],
+          duration : 500,
+          easing : 'easeInOutQuad',
+        });
+        previousErrorElements.push(element);
+      });
+    })
   }
 
   public ngOnDestroy() : void {

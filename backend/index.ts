@@ -57,9 +57,20 @@ db.connect((err) => {
 
 const loginHandler = (req : Request, res : Response) : void => {
   const { username, password, rememberMe } = req.body;
+  const ip = req.ip;
 
   if (!username || !password) {
     res.status(400).json({ message : 'Username and password are required' });
+    return;
+  }
+
+  if (typeof username !== 'string' || typeof password !== 'string') {
+    res.status(400).json({ message : 'Username and password must be strings' });
+    return;
+  }
+
+  if (ip && bannedIPs.has(ip)) {
+    res.status(403).json({ message : 'Login rejected due to too many attempts. Please try again later.' });
     return;
   }
 
@@ -83,13 +94,12 @@ const loginHandler = (req : Request, res : Response) : void => {
 
 app.post('/api/auth/login', loginHandler);
 
-const bannedIPs: Map<string, Date> = new Map();
+const bannedIPs : Map<string, Date> = new Map();
 
 const banDuration = 15 * 60 * 1000; // 15 minutes
 
 const rejectLoginHandler = (req : Request, res : Response) : void => {
   const ip = req.ip;
-  console.log(ip)
   if (!ip) {
     res.status(400).json({ message : 'Error while handling login.' });
     return;
@@ -114,7 +124,7 @@ setInterval(() => {
   for (const [ip, banTime] of bannedIPs.entries()) {
     if (now.getTime() - banTime.getTime() >= banDuration) {
       bannedIPs.delete(ip);
-      console.log(`Ban for IP ${ip} has been cleared.`);
+      console.log(`Ban for IP ${ ip } has been cleared.`);
     }
   }
 }, 60 * 1000);
