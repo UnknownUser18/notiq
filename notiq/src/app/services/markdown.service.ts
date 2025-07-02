@@ -22,17 +22,21 @@ export class MarkdownService {
       }
 
       const codeBlocks: string[] = [];
-      let htmlLine = line.replace(/`([^`]+)`/g, (match, p1) => {
+      let htmlLine = line.replace(/`([^`]+)`/g, (_match, p1) => {
         codeBlocks.push(p1);
         return `__CODE_BLOCK_${ codeBlocks.length - 1 }__`;
       });
+
 
       htmlLine = htmlLine.replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>');
       htmlLine = htmlLine.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
       htmlLine = htmlLine.replace(/\*(.*?)\*/g, '<i>$1</i>');
       htmlLine = htmlLine.replace(/~~(.*?)~~/g, '<del>$1</del>');
+      htmlLine = htmlLine.replace(/__(.*?)__/g, '<u>$1</u>');
+      htmlLine = htmlLine.replace(/==(.*?)==/g, '<mark>$1</mark>');
 
-      htmlLine = htmlLine.replace(/__CODE_BLOCK_(\d+)__/g, (match, idx) => {
+      htmlLine = htmlLine.replace(/__CODE_BLOCK_(\d+)__/g, (_match, idx) => {
+        console.log(`Replacing code block with index ${ idx }`, codeBlocks[ Number(idx) ]);
         return `<code>${ codeBlocks[ Number(idx) ] }</code>`;
       });
 
