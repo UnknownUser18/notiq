@@ -21,7 +21,19 @@ describe('MarkdownService', () => {
     ' # This is not a heading',
     'This is a paragraph with **bold** text, *italic* text, and ~~strikethrough~~ text.',
     'This is a paragraph with __underlined__ text and ==highlighted== text.',
-    'This is a paragraph with `inline code`'
+    'This is a paragraph with `inline code`',
+    '`<>i am not a inline code`',
+    'This is a paragraph with `**inline** *code*`',
+    '> This is a blockquote',
+    '> This is a blockquote with **bold** text',
+    `> This is a blockquote with
+> multiple lines
+>> and a nested blockquote`,
+    `> This is another test of blockquotes
+>> with multiple lines and a nested blockquote
+>> ... you know, just to be sure
+> And another line
+>>> and another nested blockquote.`,
   ]
 
   it('should convert h1 markdown to HTML', () => {
@@ -58,4 +70,44 @@ describe('MarkdownService', () => {
     const html = service.convertToHTML(markdown[6]);
     expect(html).toEqual(['<p>This is a paragraph with <code>inline code</code></p>']);
   });
+
+  it('should ignore non-markdown inline code', () => {
+    const html = service.convertToHTML(markdown[7]);
+    expect(html).toEqual(['<p>`<>i am not a inline code`</p>']);
+  })
+
+  it('should convert paragraph with inline code containing markdown to HTML', () => {
+    const html = service.convertToHTML(markdown[8]);
+    expect(html).toEqual(['<p>This is a paragraph with <code>**inline** *code*</code></p>']);
+  });
+
+  it('should convert blockquote to HTML', () => {
+    const html = service.convertToHTML(markdown[9]);
+    expect(html).toEqual(['<blockquote><p>This is a blockquote</p></blockquote>']);
+  });
+
+  it('should convert blockquote with bold text to HTML', () => {
+    const html = service.convertToHTML(markdown[10]);
+    expect(html).toEqual(['<blockquote><p>This is a blockquote with <b>bold</b> text</p></blockquote>']);
+  });
+
+  it('should convert nested blockquote with inline code to HTML', () => {
+    const html = service.convertToHTML(markdown[11]);
+    expect(html).toEqual([
+      '<blockquote><p>This is a blockquote with</p>',
+      '<p>multiple lines</p>',
+      '<blockquote><p>and a nested blockquote</p></blockquote></blockquote>'
+    ]);
+  });
+
+  it('should convert complex nested blockquotes to HTML', () => {
+    const html = service.convertToHTML(markdown[12]);
+    expect(html).toEqual([
+      '<blockquote><p>This is another test of blockquotes</p>',
+      '<blockquote><p>with multiple lines and a nested blockquote</p>',
+      '<p>... you know, just to be sure</p></blockquote>',
+      '<p>And another line</p>',
+      '<blockquote><blockquote><p>and another nested blockquote.</p></blockquote></blockquote></blockquote>'
+    ]);
+  })
 });
