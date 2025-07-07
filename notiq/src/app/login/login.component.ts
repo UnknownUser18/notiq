@@ -44,7 +44,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChildren('error') errorElements! : QueryList<ElementRef>;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId : Object,
+    @Inject(PLATFORM_ID) private platformId : object,
     private authService : AuthService,
     private translate : TranslateService,
     private info : InfoService) {
@@ -97,7 +97,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
       delay : 50,
       easing : 'easeInOutQuad',
     });
-    let previousErrorElements : ElementRef[] = [];
+    const previousErrorElements : ElementRef[] = [];
     this.errorElements.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
       const errorElements = this.errorElements.toArray();
       errorElements.forEach((element) => {

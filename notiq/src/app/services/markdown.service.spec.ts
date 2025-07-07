@@ -64,6 +64,9 @@ describe('MarkdownService', () => {
 + Another item in the same list
 Blah blah blah
 > This is a blockquote`,
+    "[This is a link](https://example.com)",
+    "![This is an image](https://example.com/image.png)",
+    "This is a paragraph with `inline code` and [a link](https://example.com) and ![an image](https://example.com/image.png)."
   ]
 
   it('should convert h1 markdown to HTML', () => {
@@ -201,7 +204,6 @@ Blah blah blah
 
   it('should handle mixed content', () => {
     const html = service.convertToHTML(markdown[21]);
-    console.log(html)
     expect(html).toEqual([
       '<p>Some text...</p>',
       '<ul><li>This is an unordered list item</li>',
@@ -210,4 +212,21 @@ Blah blah blah
       '<blockquote><p>This is a blockquote</p></blockquote>'
     ]);
   })
+
+  it('should convert link markdown to HTML', () => {
+    const html = service.convertToHTML(markdown[22]);
+    expect(html).toEqual(['<p><a href="https://example.com">This is a link</a></p>']);
+  });
+
+  it('should convert image markdown to HTML', () => {
+    const html = service.convertToHTML(markdown[23]);
+    expect(html).toEqual(['<p><img alt="This is an image" src="https://example.com/image.png"></p>']);
+  });
+
+  it('should convert paragraph with inline code, link, and image to HTML', () => {
+    const html = service.convertToHTML(markdown[24]);
+    expect(html).toEqual([
+      '<p>This is a paragraph with <code>inline code</code> and <a href="https://example.com">a link</a> and <img alt="an image" src="https://example.com/image.png">.</p>'
+    ]);
+  });
 });

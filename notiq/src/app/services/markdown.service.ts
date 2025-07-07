@@ -25,7 +25,7 @@ export class MarkdownService {
     const codeBlocks : string[] = [];
     let htmlLine = line.replace(/`\\?[^<>`]+`/, (match) => {
       codeBlocks.push(match.replace(/`/g, ''));
-      return `[[CODE_BLOCK_${ codeBlocks.length - 1 }]]`;
+      return `||CODE_BLOCK_${ codeBlocks.length - 1 }||`;
     });
 
     htmlLine = htmlLine.replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>');
@@ -38,7 +38,7 @@ export class MarkdownService {
     htmlLine = htmlLine.replace(/!\[(.*?)]\((.*?)\)/g, '<img alt="$1" src="$2">');
     htmlLine = htmlLine.replace(/\[(.*?)]\((.*?)\)/g, '<a href="$2">$1</a>');
 
-    htmlLine = htmlLine.replace(/\[\[CODE_BLOCK_(\d+)]]/g, (_match, idx) => {
+    htmlLine = htmlLine.replace(/\|\|CODE_BLOCK_(\d+)\|\|/g, (_match, idx) => {
       return `<code>${ codeBlocks[Number(idx)] }</code>`;
     });
     return `<p>${ htmlLine.trimEnd() }</p>`;
@@ -58,7 +58,7 @@ export class MarkdownService {
     }
 
 
-    const [_startRegex, contentRegex, HTMLElement] = map[type] ?? (() => {
+    const [, contentRegex, HTMLElement] = map[type] ?? (() => {
       throw new Error(`Unknown markdown type: ${ type }`);
     });
 
@@ -146,15 +146,15 @@ export class MarkdownService {
       throw new Error(`No matches found for ${ HTMLElement } at nesting level ${ curr }`);
     }
 
-    let [prev, curr] = [0, 0];
+    let prev : number, curr : number;
 
     if (type === 'blockquote') {
-      prev = previousLine?.match(/^>+/)?.[0].length || 0;
-      curr = line.match(/^>+/)?.[0].length || 0;
+      prev = previousLine?.match(/^>+/)?.[0]?.length || 0;
+      curr = line.match(/^>+/)?.[0]?.length || 0;
     } else {
       // +1 to account for the leading space in lists
-      prev = previousLine?.match(/^\s*/)?.[0].length! + 1 || 0;
-      curr = line.match(/^\s*/)?.[0].length! + 1 || 0;
+      prev = previousLine ? previousLine.match(/^\s*/)![0].length + 1 : 0;
+      curr = line ? line.match(/^\s*/)![0].length + 1 : 0;
     }
 
     const startTags = `<${ HTMLElement }>`.repeat(Math.max(curr - prev, 0));

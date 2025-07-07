@@ -5,7 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 
 describe('AuthService', () => {
   let service : AuthService;
-  let httpMock : any;
+  let httpMock: HttpTestingController;
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers : [
