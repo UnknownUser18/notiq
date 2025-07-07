@@ -41,7 +41,7 @@
 section {
   @include i.flex(column, center, end, i.$margin-2xs);
   width: clamp(150px, 50%, 375px);
-  padding: i.$padding-sm;
+  padding: i.$padding-lg;
   border: i.$base-border transparent;
   border-radius: i.$border-radius-lg;
   background-color: var(--bg-light);

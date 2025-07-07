@@ -7,7 +7,7 @@ import { isPlatformBrowser } from '@angular/common';
 })
 export class InfoService {
 
-  constructor(@Inject(PLATFORM_ID) private platform : Object, private title : Title) {
+  constructor(@Inject(PLATFORM_ID) private platform : object, private title : Title) {
   }
 
   public setTitle(title : string) : void {
