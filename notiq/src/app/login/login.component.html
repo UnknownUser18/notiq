@@ -1,7 +1,9 @@
 <div #main>
   <form [formGroup]="loginForm" (submit)="login()">
-    <h1>{{ 'login.title' | translate }}</h1>
-    <p class="break-word">{{ 'login.subtitle' | translate }}</p>
+    <hgroup>
+      <h1>{{ 'login.title' | translate }}</h1>
+      <p class="break-word">{{ 'login.subtitle' | translate }}</p>
+    </hgroup>
     <label>
       <span>{{ 'login.username.label' | translate }}</span>
       <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" name="username" required>
@@ -12,9 +14,9 @@
     <label>
       <span>{{ 'login.password.label' | translate }}</span>
       <div>
-        <input [type]="showPassword ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" name="password" required>
-        <button type="button" (click)="showPassword = !showPassword" class="show-password" [disabled]="loginForm.disabled">
-          <fa-icon [icon]="showPassword ? faEyeSlash : faEye" [title]="showPassword ? ('login.password.hide' | translate) : ('login.password.show' | translate)"></fa-icon>
+        <input [type]="showPassword() ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" name="password" required>
+        <button type="button" (click)="updatePasswordVisibility()" class="show-password" [disabled]="loginForm.disabled">
+          <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" [title]="showPassword() ? ('login.password.hide' | translate) : ('login.password.show' | translate)"></fa-icon>
         </button>
       </div>
       @if (loginForm.get('password')!.invalid && loginForm.get('password')!.touched) {
@@ -26,7 +28,7 @@
       <span>{{ 'login.rememberMe' | translate }}</span>
     </label>
 
-    @if (isLoggingIn) {
+    @if (isLoggingIn()) {
       <button type="button" class="logging-in" disabled>
         <span class="spinner"></span>
         {{ 'login.button.loggingIn' | translate }}
@@ -39,8 +41,8 @@
       <button type="submit">{{ 'login.button.label' | translate }}</button>
     }
   </form>
-  <section [class]="{ 'success': statusNumber === 200, 'error': statusNumber !== 200 && statusNumber !== undefined }">
-    @switch (statusNumber) {
+  <section [class]="{ 'success': statusNumber() === 200, 'error': statusNumber() !== undefined && statusNumber() !== 200 }">
+    @switch (statusNumber()) {
       @case (undefined) {
         <h2>{{ 'login.sidebar.title' | translate }}</h2>
         <p>{{ 'login.sidebar.subtitle' | translate }}</p>

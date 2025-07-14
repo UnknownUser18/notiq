@@ -5,12 +5,16 @@ import jwt from 'jsonwebtoken';
 import mysql from 'mysql2';
 import 'dotenv/config';
 
+
 const app = express();
 
 app.use(express.json());
 
 app.use(cookieParser());
 
+const bannedIPs : Map<string, Date> = new Map();
+
+const banDuration = 15 * 60 * 1000; // 15 minutes
 
 if (process.env.HOST === '' || process.env.HOST === undefined)
   throw new Error('Please set the HOST environment variable');
@@ -53,7 +57,7 @@ db.connect((err) => {
   console.log('Connected to the database!');
 });
 
-const loginHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/login', (req : Request, res : Response) : void => {
   const { username, password, rememberMe } = req.body;
   const ip = req.ip;
 
@@ -85,18 +89,27 @@ const loginHandler = (req : Request, res : Response) : void => {
     }
     const token = jwt.sign({ username }, SECRET, rememberMe ? { expiresIn : '30d' } : undefined);
 
+    if (!token) {
+      res.status(500).json({ message : 'Failed to create session' });
+      return;
+    }
+
+    if (!req.cookies) {
+      res.status(500).json({ message : 'Cookies are not enabled in the request' });
+      return;
+    }
+
+    if (!res.cookie) {
+      res.status(500).json({ message : 'Response cookie method is not available' });
+      return;
+    }
+
     res.cookie('token', token, { httpOnly : true });
-    res.status(200).json({ message : 'Login successful' });
+    res.status(200).json({ message : 'Login successful', token });
   });
-};
+});
 
-app.post('/api/auth/login', loginHandler);
-
-const bannedIPs : Map<string, Date> = new Map();
-
-const banDuration = 15 * 60 * 1000; // 15 minutes
-
-const rejectLoginHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/reject-login', (req : Request, res : Response) : void => {
   const ip = req.ip;
   if (!ip) {
     res.status(400).json({ message : 'Error while handling login.' });
@@ -113,9 +126,7 @@ const rejectLoginHandler = (req : Request, res : Response) : void => {
   bannedIPs.set(ip, currentTime);
   console.log(`IP ${ ip } has been banned.`);
   res.status(200).json({ message : 'Login rejected' });
-}
-
-app.post('/api/auth/reject-login', rejectLoginHandler);
+});
 
 setInterval(() => {
   const now = new Date();
@@ -127,24 +138,21 @@ setInterval(() => {
   }
 }, 60 * 1000);
 
-const checkLoginStatusHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/check-login-status', (req : Request, res : Response) : void => {
   const ip = req.ip;
   if (!ip) {
     res.status(400).json({ message : 'Error while checking login status.' });
     return;
   }
-
   if (bannedIPs.has(ip)) {
     res.status(403).json({ message : 'Login rejected due to too many attempts. Please try again later.' });
     return;
   } else {
     res.status(200).json({ message : 'User can log in.' });
   }
-};
+});
 
-app.post('/api/auth/check-login-status', checkLoginStatusHandler);
-
-const checkSessionHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/check-session', (req : Request, res : Response) : void => {
   const token = req.cookies.token;
   if (!token) {
     res.status(401).json({ message : 'No session found' });
@@ -156,8 +164,6 @@ const checkSessionHandler = (req : Request, res : Response) : void => {
       res.status(403).json({ message : 'Invalid session' });
       return;
     }
-    res.status(200).json({ message : 'Session is valid', user : decoded });
+    res.status(200).json({ message : 'Session is valid', username : decoded.username });
   });
-}
-
-app.post('/api/auth/check-session', checkSessionHandler);
+});

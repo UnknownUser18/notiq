@@ -12,9 +12,14 @@
     "yes": "Tak",
     "no": "Nie"
   },
+  "navigation": {
+    "home": "Strona główna",
+    "settings": "Ustawienia"
+  },
   "title": {
     "application": "Notiq",
-    "login": "Notiq - Logowanie"
+    "login": "Logowanie - Notiq",
+    "main": "Strona główna - Notiq"
   },
   "login": {
     "title": "Logowanie",
@@ -55,5 +60,12 @@
       }
     },
     "rememberMe": "Zapamiętaj mnie"
+  },
+  "main": {
+    "welcome": {
+      "day": "Witaj z powrotem {{name}}.",
+      "night": "Dobry wieczór {{name}}.",
+      "morning": "Dzień dobry {{name}}."
+    }
   }
 }

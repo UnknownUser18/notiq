@@ -13,8 +13,8 @@
 }
 
 
-html, body, app-root {
-  @include i.flex(column, center, center);
+html, body, app-root, app-empty-layout {
+  display: flex;
   min-width: 100%;
   min-height: 100%;
 }

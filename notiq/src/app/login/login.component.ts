@@ -1,14 +1,17 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { faCheck, faEye, faEyeSlash, faWarning } from '@fortawesome/free-solid-svg-icons';
 import { animate } from 'animejs';
 import { isPlatformBrowser } from '@angular/common';
 import { take } from 'rxjs/operators';
 import { InfoService } from '../services/info.service';
+import { HttpResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector : 'app-login',
@@ -21,18 +24,17 @@ import { InfoService } from '../services/info.service';
   styleUrl : './login.component.scss',
 })
 export class LoginComponent implements OnDestroy, AfterViewInit {
-  private destroy$ : Subject<void> = new Subject<void>();
+  private readonly maxAttempts = 3;
+
+  protected numberOfAttempts = signal(0);
+  protected showPassword = signal(false);
+  protected statusNumber : WritableSignal<number | undefined> = signal(undefined);
+  protected isLoggingIn = signal(false);
 
   protected readonly faEyeSlash = faEyeSlash;
   protected readonly faEye = faEye;
   protected readonly faWarning = faWarning;
   protected readonly faCheck = faCheck;
-
-  protected numberOfAttempts = 0;
-  protected maxAttempts = 3;
-  protected showPassword = false;
-  protected statusNumber : number | undefined;
-  protected isLoggingIn = false;
 
   protected loginForm = new FormGroup({
     username : new FormControl(null, [Validators.required]),
@@ -44,48 +46,76 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   @ViewChildren('error') errorElements! : QueryList<ElementRef>;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId : Object,
+    @Inject(PLATFORM_ID) private platformId : object,
     private authService : AuthService,
     private translate : TranslateService,
-    private info : InfoService) {
+    private info : InfoService,
+    private router : Router) {
     this.translate.get('title.login').pipe(take(1)).subscribe(title => this.info.setTitle(title));
-    this.authService.checkLoginStatus().pipe(takeUntil(this.destroy$)).subscribe({
-      next : (response) => {
-        if (response.status === 200)
-          this.loginForm.enable();
-      },
-      error : (error) => {
-        if (error.status === 403)
-          this.loginForm.disable();
-      }
+
+    this.authService.checkSession().pipe(
+      map((res : HttpResponse<object>) => res.status === 200),
+      take(1),
+      catchError(() => [false])
+    ).subscribe(isLoggedIn => {
+      if (isLoggedIn) this.router.navigate(['']).then();
     });
+
+    this.authService.checkLoginStatus().pipe(
+      takeUntilDestroyed(),
+      map((res) => res.status === 200),
+      catchError(() => [false])
+    ).subscribe(canLogIn => {
+      if (canLogIn)
+        this.loginForm.enable();
+      else
+        this.loginForm.disable();
+      this.loginForm.reset({
+        username : null,
+        password : null,
+        rememberMe : false
+      })
+    })
+  }
+
+  protected updatePasswordVisibility() : void {
+    this.showPassword.set(!this.showPassword());
   }
 
   protected login() : void {
     this.loginForm.markAllAsTouched();
-    if (this.loginForm.invalid || this.isLoggingIn) return;
-    this.isLoggingIn = true;
+    if (this.loginForm.invalid || this.isLoggingIn()) return;
+
     const { username, password, rememberMe } = this.loginForm.value;
-    this.authService.login(username!, password!, rememberMe!).pipe(
-      takeUntil(this.destroy$),
-      finalize(() => {
-        this.isLoggingIn = false;
-        this.numberOfAttempts++;
-        if (this.numberOfAttempts < this.maxAttempts) return;
-        this.loginForm.disable();
-        this.authService.rejectLogin().pipe(takeUntil(this.destroy$)).subscribe({
-          error : () => {
-          }
-        });
-      })).subscribe({
-      next : (response) => {
-        this.statusNumber = response.status;
-        this.numberOfAttempts = 0;
-      },
-      error : (error) => {
-        this.statusNumber = error.status;
-      },
-    });
+
+    if (!username || !password || rememberMe === undefined || rememberMe === null) {
+      this.loginForm.updateValueAndValidity();
+      return;
+    }
+
+
+    this.isLoggingIn.set(true);
+    this.authService.login(username, password, rememberMe).pipe(
+      map((res) => {
+        this.statusNumber.set(res.status);
+        if (res.status !== 200) throw new Error('Unexpected status code', { cause : res });
+        this.numberOfAttempts.set(0);
+        this.router.navigate(['']).then();
+      }),
+      catchError(error => {
+        this.statusNumber.set(error.status);
+        this.isLoggingIn.set(false);
+        this.numberOfAttempts.update(value => value + 1);
+        if (this.numberOfAttempts() >= this.maxAttempts) {
+          this.loginForm.disable();
+          this.authService.rejectLogin().pipe(
+            take(1),
+            catchError(() => of(false))
+          ).subscribe();
+        }
+        return of(false);
+      }),
+    ).subscribe()
   }
 
   public ngAfterViewInit() : void {
@@ -97,8 +127,8 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
       delay : 50,
       easing : 'easeInOutQuad',
     });
-    let previousErrorElements : ElementRef[] = [];
-    this.errorElements.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
+    const previousErrorElements : ElementRef[] = [];
+    this.errorElements.changes.subscribe(() => {
       const errorElements = this.errorElements.toArray();
       errorElements.forEach((element) => {
         if (previousErrorElements.includes(element)) return;
@@ -120,12 +150,8 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   }
 
   public ngOnDestroy() : void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    if (this.statusNumber !== 200) {
-      this.statusNumber = undefined;
-    }
-    this.isLoggingIn = false;
+    if (this.statusNumber() !== 200) this.statusNumber.set(undefined);
+    this.isLoggingIn.set(false);
     this.loginForm.reset();
     this.loginForm.markAsPristine();
     this.loginForm.markAsUntouched();
