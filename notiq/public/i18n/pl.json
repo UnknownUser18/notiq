@@ -12,9 +12,20 @@
     "yes": "Tak",
     "no": "Nie"
   },
+  "navigation": {
+    "home": "Strona główna",
+    "settings": "Ustawienia",
+    "profile": "Profil",
+    "friends": "Znajomi",
+    "notifications": "Powiadomienia",
+    "messages": "Wiadomości",
+    "notes": "Notatki",
+    "search": "Szukaj"
+  },
   "title": {
     "application": "Notiq",
-    "login": "Notiq - Logowanie"
+    "login": "Logowanie - Notiq",
+    "main": "Strona główna - Notiq"
   },
   "login": {
     "title": "Logowanie",
@@ -46,7 +57,7 @@
         "message": "Przekierowywanie do aplikacji..."
       },
       "401": {
-        "title": "Brak autoryzacji",
+        "title": "Błąd autoryzacji",
         "message": "Dane logowania są nieprawidłowe."
       },
       "500": {
@@ -55,5 +66,12 @@
       }
     },
     "rememberMe": "Zapamiętaj mnie"
+  },
+  "main": {
+    "welcome": {
+      "day": "Witaj z powrotem {{name}}.",
+      "night": "Dobry wieczór {{name}}.",
+      "morning": "Dzień dobry {{name}}."
+    }
   }
 }

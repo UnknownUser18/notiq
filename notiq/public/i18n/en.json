@@ -12,9 +12,20 @@
     "yes": "Yes",
     "no": "No"
   },
+  "navigation": {
+    "home": "Home",
+    "settings": "Settings",
+    "profile": "Profile",
+    "friends": "Friends",
+    "notifications": "Notifications",
+    "messages": "Messages",
+    "notes": "Notes",
+    "search": "Search"
+  },
   "title": {
     "application": "Notiq",
-    "login": "Notiq - Login"
+    "login": "Login - Notiq",
+    "main": "Home - Notiq"
   },
   "login": {
     "title": "Login",
@@ -55,5 +66,12 @@
       }
     },
     "rememberMe": "Remember me"
+  },
+  "main": {
+    "welcome": {
+      "day": "Welcome back, {{name}}.",
+      "night": "Good evening, {{name}}.",
+      "morning": "Good morning, {{name}}."
+    }
   }
 }

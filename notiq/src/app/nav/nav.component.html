@@ -1,0 +1,41 @@
+<ul>
+  <li><a routerLink="" routerLinkActive="active" [attr.aria-label]="'navigation.home' | translate">
+    <fa-icon [icon]="faHome" aria-hidden="true" />
+    {{ 'navigation.home' | translate }}
+  </a></li>
+
+  <li><a routerLink="friends" [attr.aria-label]="'navigation.friends' | translate">
+    <fa-icon [icon]="faUserFriends" aria-hidden="true" />
+    {{ 'navigation.friends' | translate }}
+  </a></li>
+
+  <li><a routerLink="notes" [attr.aria-label]="'navigation.notes' | translate">
+    <fa-icon [icon]="faPenToSquare" aria-hidden="true" />
+    {{ 'navigation.notes' | translate }}
+  </a></li>
+
+  <li><a routerLink="notifications" [attr.aria-label]="'navigation.notifications' | translate">
+    <fa-icon [icon]="faBell" aria-hidden="true" />
+    {{ 'navigation.notifications' | translate }}
+  </a></li>
+
+  <li><a routerLink="messages" [attr.aria-label]="'navigation.messages' | translate">
+    <fa-icon [icon]="faMessage" aria-hidden="true" />
+    {{ 'navigation.messages' | translate }}
+  </a></li>
+
+  <li><a routerLink="search" [attr.aria-label]="'navigation.search' | translate">
+    <fa-icon [icon]="faMagnifyingGlass" aria-hidden="true" />
+    {{ 'navigation.search' | translate }}
+  </a></li>
+
+  <li><a routerLink="profile" [attr.aria-label]="'navigation.profile' | translate">
+    <fa-icon [icon]="faUser" aria-hidden="true" />
+    {{ 'navigation.profile' | translate }}
+  </a></li>
+
+  <li><a routerLink="settings" routerLinkActive="active" [attr.aria-label]="'navigation.settings' | translate">
+    <fa-icon [icon]="faCog" aria-hidden="true" />
+    {{ 'navigation.settings' | translate }}
+  </a></li>
+</ul>

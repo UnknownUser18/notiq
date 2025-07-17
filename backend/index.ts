@@ -5,12 +5,20 @@ import jwt from 'jsonwebtoken';
 import mysql from 'mysql2';
 import 'dotenv/config';
 
+interface resultLogin {
+  userExists? : number; // mysql returns 1 for true, 0 for false
+  uuid? : string;
+}
+
 const app = express();
 
 app.use(express.json());
 
 app.use(cookieParser());
 
+const bannedIPs : Map<string, Date> = new Map();
+
+const banDuration = 15 * 60 * 1000; // 15 minutes
 
 if (process.env.HOST === '' || process.env.HOST === undefined)
   throw new Error('Please set the HOST environment variable');
@@ -53,7 +61,7 @@ db.connect((err) => {
   console.log('Connected to the database!');
 });
 
-const loginHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/login', (req : Request, res : Response) : void => {
   const { username, password, rememberMe } = req.body;
   const ip = req.ip;
 
@@ -72,31 +80,42 @@ const loginHandler = (req : Request, res : Response) : void => {
     return;
   }
 
-  db.query('SELECT EXISTS(SELECT 1 FROM users WHERE username = ? AND password = ?) AS userExists', [username, password], (err, results) => {
+  db.query('SELECT EXISTS(SELECT 1 FROM users WHERE username = ? AND password = ?) AS userExists, uuid FROM users WHERE username = ? AND password = ?', [username, password, username, password], (err, results) => {
     if (err) {
       console.error('Database query failed:', err);
       res.status(500).json({ message : 'Internal server error' });
       return;
     }
-    const userExists = (results as any)[0]?.userExists === 1;
+    const result : resultLogin = (results as any)[0] as resultLogin;
+    const userExists = result?.uuid ? result.userExists === 1 : false;
+
     if (!userExists) {
       res.status(401).json({ message : 'Invalid username or password' });
       return;
     }
-    const token = jwt.sign({ username }, SECRET, rememberMe ? { expiresIn : '30d' } : undefined);
+    const token = jwt.sign(result.uuid!, SECRET, rememberMe ? { expiresIn : '30d' } : undefined);
+
+    if (!token) {
+      res.status(500).json({ message : 'Failed to create session' });
+      return;
+    }
+
+    if (!req.cookies) {
+      res.status(500).json({ message : 'Cookies are not enabled in the request' });
+      return;
+    }
+
+    if (!res.cookie) {
+      res.status(500).json({ message : 'Response cookie method is not available' });
+      return;
+    }
 
     res.cookie('token', token, { httpOnly : true });
-    res.status(200).json({ message : 'Login successful' });
+    res.status(200).json({ message : 'Login successful', token });
   });
-};
+});
 
-app.post('/api/auth/login', loginHandler);
-
-const bannedIPs : Map<string, Date> = new Map();
-
-const banDuration = 15 * 60 * 1000; // 15 minutes
-
-const rejectLoginHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/reject-login', (req : Request, res : Response) : void => {
   const ip = req.ip;
   if (!ip) {
     res.status(400).json({ message : 'Error while handling login.' });
@@ -113,9 +132,7 @@ const rejectLoginHandler = (req : Request, res : Response) : void => {
   bannedIPs.set(ip, currentTime);
   console.log(`IP ${ ip } has been banned.`);
   res.status(200).json({ message : 'Login rejected' });
-}
-
-app.post('/api/auth/reject-login', rejectLoginHandler);
+});
 
 setInterval(() => {
   const now = new Date();
@@ -127,24 +144,21 @@ setInterval(() => {
   }
 }, 60 * 1000);
 
-const checkLoginStatusHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/check-login-status', (req : Request, res : Response) : void => {
   const ip = req.ip;
   if (!ip) {
     res.status(400).json({ message : 'Error while checking login status.' });
     return;
   }
-
   if (bannedIPs.has(ip)) {
     res.status(403).json({ message : 'Login rejected due to too many attempts. Please try again later.' });
     return;
   } else {
     res.status(200).json({ message : 'User can log in.' });
   }
-};
+});
 
-app.post('/api/auth/check-login-status', checkLoginStatusHandler);
-
-const checkSessionHandler = (req : Request, res : Response) : void => {
+app.post('/api/auth/check-session', (req : Request, res : Response) : void => {
   const token = req.cookies.token;
   if (!token) {
     res.status(401).json({ message : 'No session found' });
@@ -156,8 +170,29 @@ const checkSessionHandler = (req : Request, res : Response) : void => {
       res.status(403).json({ message : 'Invalid session' });
       return;
     }
-    res.status(200).json({ message : 'Session is valid', user : decoded });
-  });
-}
+    const uuid = decoded as string;
 
-app.post('/api/auth/check-session', checkSessionHandler);
+    if (!uuid) {
+      res.status(400).json({ message : 'Invalid session data' });
+      return;
+    }
+
+
+    db.query('SELECT username FROM users WHERE uuid = ?', [uuid], (err, results) => {
+      const result = (results as any)[0];
+
+      if (err) {
+        console.error('Database query failed:', err);
+        res.status(500).json({ message : 'Internal server error' });
+        return;
+      }
+
+      if (!result) {
+        res.status(404).json({ message : 'User not found' });
+        return;
+      }
+
+      res.status(200).json({ message : 'Session is valid', username : result.username });
+    });
+  });
+});
