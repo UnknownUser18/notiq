@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
