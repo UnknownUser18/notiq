@@ -5,6 +5,10 @@ import jwt from 'jsonwebtoken';
 import mysql from 'mysql2';
 import 'dotenv/config';
 
+interface resultLogin {
+  userExists? : number; // mysql returns 1 for true, 0 for false
+  uuid? : string;
+}
 
 const app = express();
 
@@ -76,18 +80,20 @@ app.post('/api/auth/login', (req : Request, res : Response) : void => {
     return;
   }
 
-  db.query('SELECT EXISTS(SELECT 1 FROM users WHERE username = ? AND password = ?) AS userExists', [username, password], (err, results) => {
+  db.query('SELECT EXISTS(SELECT 1 FROM users WHERE username = ? AND password = ?) AS userExists, uuid FROM users WHERE username = ? AND password = ?', [username, password, username, password], (err, results) => {
     if (err) {
       console.error('Database query failed:', err);
       res.status(500).json({ message : 'Internal server error' });
       return;
     }
-    const userExists = (results as any)[0]?.userExists === 1;
+    const result : resultLogin = (results as any)[0] as resultLogin;
+    const userExists = result?.uuid ? result.userExists === 1 : false;
+
     if (!userExists) {
       res.status(401).json({ message : 'Invalid username or password' });
       return;
     }
-    const token = jwt.sign({ username }, SECRET, rememberMe ? { expiresIn : '30d' } : undefined);
+    const token = jwt.sign(result.uuid!, SECRET, rememberMe ? { expiresIn : '30d' } : undefined);
 
     if (!token) {
       res.status(500).json({ message : 'Failed to create session' });
@@ -164,6 +170,29 @@ app.post('/api/auth/check-session', (req : Request, res : Response) : void => {
       res.status(403).json({ message : 'Invalid session' });
       return;
     }
-    res.status(200).json({ message : 'Session is valid', username : decoded.username });
+    const uuid = decoded as string;
+
+    if (!uuid) {
+      res.status(400).json({ message : 'Invalid session data' });
+      return;
+    }
+
+
+    db.query('SELECT username FROM users WHERE uuid = ?', [uuid], (err, results) => {
+      const result = (results as any)[0];
+
+      if (err) {
+        console.error('Database query failed:', err);
+        res.status(500).json({ message : 'Internal server error' });
+        return;
+      }
+
+      if (!result) {
+        res.status(404).json({ message : 'User not found' });
+        return;
+      }
+
+      res.status(200).json({ message : 'Session is valid', username : result.username });
+    });
   });
 });

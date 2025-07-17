@@ -14,7 +14,13 @@
   },
   "navigation": {
     "home": "Strona główna",
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "profile": "Profil",
+    "friends": "Znajomi",
+    "notifications": "Powiadomienia",
+    "messages": "Wiadomości",
+    "notes": "Notatki",
+    "search": "Szukaj"
   },
   "title": {
     "application": "Notiq",
@@ -51,7 +57,7 @@
         "message": "Przekierowywanie do aplikacji..."
       },
       "401": {
-        "title": "Brak autoryzacji",
+        "title": "Błąd autoryzacji",
         "message": "Dane logowania są nieprawidłowe."
       },
       "500": {

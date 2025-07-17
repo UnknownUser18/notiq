@@ -18,13 +18,16 @@ table:
     - `id`: Unique identifier for each user (Primary Key).
     - `username`: Unique username for the user.
     - `password`: Hashed password for user authentication (not hashed yet).
+    - `uuid`: Unique identifier for the user, used for authentication.
 - **Constraints**:
     - `id` is unsigned.
-- **Indexes** - None (other than the primary key).
+- **Indexes**:
+  - `id` is the primary key.
+  - `uuid` is unique.
 - **Relationships**: None.
 - **Example Data**:
 
-| id | username | password        |
-|----|----------|-----------------|
-| 1  | habibi   | cometopoland123 |
-| 2  | yogurt   | sybau           |
+| id | username | password        | uuid                                 |
+|----|----------|-----------------|--------------------------------------|
+| 1  | habibi   | cometopoland123 | abcd1234-5678-90ab-cdef-1234567890ab |
+| 2  | yogurt   | sybau           | efgh5678-90ab-cdef-1234-567890abcdef |

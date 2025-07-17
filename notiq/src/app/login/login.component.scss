@@ -11,42 +11,20 @@
     align-items: unset;
     border: i.$base-border var(--border-muted);
     border-radius: i.$border-radius-xl;
-    background: var(--bg);
-    transition: i.transition(background, i.$duration-lg);
     box-shadow: i.$shadow-xl;
-
-    &::before {
-      position: absolute;
-      background: linear-gradient(45deg, var(--bg) 20%, var(--bg-light));
-      transition: i.transition(opacity, i.$duration-lg);
-      opacity: 0;
-      content: '';
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    &:hover::before {
-      opacity: 1;
-    }
-
-    > * {
-      position: relative;
-      z-index: 1;
-    }
+    @include i.background(var(--bg), (45deg, var(--bg) 20%, var(--bg-light)));
   }
 }
 
 
-section {
-  @include i.flex(column, center, end, i.$margin-2xs);
-  width: clamp(150px, 50%, 375px);
+div > hgroup {
+  @include i.flex(column, center, end, i.$margin-3xs);
   padding: i.$padding-sm;
   border: i.$base-border transparent;
   border-radius: i.$border-radius-lg;
   background-color: var(--bg-light);
-  text-align: end;
   transition: i.transition(background-color, i.$duration-md);
+  text-align: end;
 
   &.success {
     background-color: color-mix(in oklch, var(--success) 35%, var(--bg-light) 10%);

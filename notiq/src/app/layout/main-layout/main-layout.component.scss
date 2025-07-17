@@ -1,9 +1,7 @@
 :host {
-  display: grid;
-  grid-template-columns: 0.15fr 1fr;
-  grid-template-rows: 1fr;
   width: 100%;
-}
-router-outlet {
-  display: none;
+  display: grid;
+  grid-template-columns: 0.1fr 1fr;
+  grid-template-rows: 1fr;
+  column-gap: 10px;
 }

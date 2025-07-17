@@ -1,26 +1,26 @@
 <div #main>
-  <form [formGroup]="loginForm" (submit)="login()">
+  <form [formGroup]="loginForm" (submit)="login()" [attr.aria-busy]="isLoggingIn()" [attr.aria-live]="isLoggingIn() ? 'polite' : null" method="post">
     <hgroup>
       <h1>{{ 'login.title' | translate }}</h1>
       <p class="break-word">{{ 'login.subtitle' | translate }}</p>
     </hgroup>
     <label>
       <span>{{ 'login.username.label' | translate }}</span>
-      <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" name="username" required>
-      @if (loginForm.get('username')!.invalid && loginForm.get('username')!.touched) {
-        <span class="error" #error>{{ 'login.username.warning' | translate }}</span>
+      <input type="text" [placeholder]="'login.username.placeholder' | translate" formControlName="username" name="username" required autocomplete="username" [attr.aria-errormessage]="isUsernameInvalid() ? 'username_error' : null" [attr.aria-invalid]="isUsernameInvalid()">
+      @if (isUsernameInvalid()) {
+        <span class="error" id="username_error" #error>{{ 'login.username.warning' | translate }}</span>
       }
     </label>
     <label>
       <span>{{ 'login.password.label' | translate }}</span>
       <div>
-        <input [type]="showPassword() ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" name="password" required>
+        <input [type]="showPassword() ? 'text' : 'password'" [placeholder]="'login.password.placeholder' | translate" formControlName="password" name="password" required autocomplete="current-password" [attr.aria-errormessage]="isPasswordInvalid() ? 'password_error' : null" [attr.aria-invalid]="isPasswordInvalid()">
         <button type="button" (click)="updatePasswordVisibility()" class="show-password" [disabled]="loginForm.disabled">
-          <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" [title]="showPassword() ? ('login.password.hide' | translate) : ('login.password.show' | translate)"></fa-icon>
+          <fa-icon [icon]="showPassword() ? faEyeSlash : faEye" [title]="showPassword() ? ('login.password.hide' | translate) : ('login.password.show' | translate)" />
         </button>
       </div>
-      @if (loginForm.get('password')!.invalid && loginForm.get('password')!.touched) {
-        <span class="error" #error>{{ 'login.password.warning' | translate }}</span>
+      @if (isPasswordInvalid()) {
+        <span class="error" id="password_error" #error>{{ 'login.password.warning' | translate }}</span>
       }
     </label>
     <label>
@@ -41,25 +41,34 @@
       <button type="submit">{{ 'login.button.label' | translate }}</button>
     }
   </form>
-  <section [class]="{ 'success': statusNumber() === 200, 'error': statusNumber() !== undefined && statusNumber() !== 200 }">
+  <hgroup [class]="{ 'success': statusNumber() === 200, 'error': statusNumber() !== undefined && statusNumber() !== 200 }">
     @switch (statusNumber()) {
       @case (undefined) {
         <h2>{{ 'login.sidebar.title' | translate }}</h2>
         <p>{{ 'login.sidebar.subtitle' | translate }}</p>
       }
       @case (200) {
-        <h2><fa-icon [icon]="faCheck"></fa-icon>{{ 'login.status.200.title' | translate }}</h2>
+        <h2>
+          <fa-icon [icon]="faCheck" />
+          {{ 'login.status.200.title' | translate }}
+        </h2>
         <p>{{ 'login.status.200.message' | translate }}</p>
       }
       @case (401) {
-        <h2><fa-icon [icon]="faWarning"></fa-icon>{{ 'login.status.401.title' | translate }}</h2>
+        <h2>
+          <fa-icon [icon]="faWarning" />
+          {{ 'login.status.401.title' | translate }}
+        </h2>
         <p>{{ 'login.status.401.message' | translate }}</p>
       }
       @case (500) {
-        <h2><fa-icon [icon]="faWarning"></fa-icon>{{ 'login.status.500.title' | translate }}</h2>
+        <h2>
+          <fa-icon [icon]="faWarning" />
+          {{ 'login.status.500.title' | translate }}
+        </h2>
         <p>{{ 'login.status.500.message' | translate }}</p>
       }
     }
-  </section>
+  </hgroup>
 </div>
 

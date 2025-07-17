@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Manrope:wght@200..800&display=swap');
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 ::selection {
@@ -14,9 +14,9 @@
 
 
 html, body, app-root, app-empty-layout {
-  display: flex;
   min-width: 100%;
   min-height: 100%;
+  display: flex;
 }
 
 .break-word {
@@ -30,15 +30,19 @@ body, app-root, app-login {
 }
 
 body {
+  font-family: i.$font-interface;
   background-color: var(--bg-dark);
   color: var(--text);
-  font-family: i.$font-interface;
 }
 
 input, textarea, select, button {
-  border: 0;
-  outline: none;
   font-family: i.$font-interface;
-  color: var(--text);
+  border: 0;
   background-color: var(--bg-light);
+  color: var(--text);
+  outline: none;
+}
+
+router-outlet {
+  display: none;
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
+import { AfterViewInit, Component, computed, ElementRef, Inject, OnDestroy, PLATFORM_ID, QueryList, Signal, signal, ViewChild, ViewChildren, WritableSignal } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -31,6 +31,7 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
   protected statusNumber : WritableSignal<number | undefined> = signal(undefined);
   protected isLoggingIn = signal(false);
 
+
   protected readonly faEyeSlash = faEyeSlash;
   protected readonly faEye = faEye;
   protected readonly faWarning = faWarning;
@@ -53,13 +54,18 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
     private router : Router) {
     this.translate.get('title.login').pipe(take(1)).subscribe(title => this.info.setTitle(title));
 
-    this.authService.checkSession().pipe(
-      map((res : HttpResponse<object>) => res.status === 200),
-      take(1),
-      catchError(() => [false])
-    ).subscribe(isLoggedIn => {
-      if (isLoggedIn) this.router.navigate(['']).then();
-    });
+    if (isPlatformBrowser(platformId)) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        this.authService.checkSession().pipe(
+          map((res : HttpResponse<object>) => res.status === 200),
+          take(1),
+          catchError(() => [false])
+        ).subscribe(isLoggedIn => {
+          if (isLoggedIn) this.router.navigate(['']).then();
+        });
+      }
+    }
 
     this.authService.checkLoginStatus().pipe(
       takeUntilDestroyed(),
@@ -80,6 +86,14 @@ export class LoginComponent implements OnDestroy, AfterViewInit {
 
   protected updatePasswordVisibility() : void {
     this.showPassword.set(!this.showPassword());
+  }
+
+  protected isUsernameInvalid() : boolean {
+    return !!this.loginForm.get('username')?.invalid && !!this.loginForm.get('username')?.touched;
+  }
+
+  protected isPasswordInvalid() : boolean {
+    return !!this.loginForm.get('password')?.invalid && !!this.loginForm.get('password')?.touched;
   }
 
   protected login() : void {

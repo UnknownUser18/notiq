@@ -1,0 +1,55 @@
+@use 'index' as i;
+
+:host {
+  transition: i.transition(border-right-color, i.$duration-md);
+  border-right: 1px solid var(--border-muted);
+
+  &:hover {
+    border-right-color: var(--border);
+  }
+}
+
+ul {
+  @include i.flex(column, space-between, center, i.$margin-sm);
+  height: 100%;
+  padding: (i.$padding-xl * 1.5) 0;
+}
+
+li {
+  width: 70%;
+  border: 1px solid color-mix(in oklch, var(--bg) 75%, var(--border-muted) 25%);
+  border-radius: i.$border-radius-sm;
+  list-style: none;
+  transition: i.transition(border-color, i.$duration-md);
+  box-shadow: i.$shadow-xl;
+
+  &:before {
+    border-radius: i.$border-radius-sm;
+  }
+
+  &:hover, &:focus {
+    border-color: color-mix(in oklch, var(--bg-light) 50%, var(--border) 25%);
+
+    a {
+      color: var(--text);
+    }
+  }
+
+  @include i.background(color-mix(in oklch, var(--bg) 75%, var(--bg-light) 5%), (45deg, color-mix(in oklch, var(--bg) 85%, var(--bg-light) 15%) 80%, color-mix(in oklch, var(--bg-light) 20%, var(--highlight) 30%)));
+}
+
+
+a {
+  @include i.flex(column, space-between, center);
+  padding: i.$padding-md i.$padding-2xs;
+  font-size: i.$font-size-xs;
+  color: var(--text-muted);
+  text-align: center;
+  transition: i.transition(color, i.$duration-md);
+  text-decoration: none;
+
+}
+
+fa-icon {
+  font-size: i.$font-size-md;
+}
